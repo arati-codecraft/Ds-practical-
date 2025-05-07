@@ -1,0 +1,131 @@
+import java.util.Scanner;
+
+class TokenRing {
+    public static void main(String args[]) {
+        Scanner scan = new Scanner(System.in);
+
+        // Get number of nodes
+        System.out.println("Enter the number of nodes:");
+        int n = scan.nextInt();
+
+        int[] pids = new int[n]; // Array to store process IDs
+
+        // Get process IDs for each node
+        System.out.println("\nEnter the process IDs for each node:");
+        for (int i = 0; i < n; i++) {
+            System.out.print("Process ID for node " + i + ": ");
+            pids[i] = scan.nextInt();
+        }
+
+        int token = 0;
+        int choice;
+
+        // Display the ring structure
+        System.out.println("\nRing Structure:");
+        for (int i = 0; i < n; i++) {
+            System.out.print("[" + i + " (PID: " + pids[i] + ")] ");
+        }
+        System.out.println("-> [" + 0 + " (PID: " + pids[0] + ")]");
+
+        // Display all nodes in a single line
+        System.out.print("\nNodes: ");
+        for (int i = 0; i < n; i++) {
+            System.out.print(i + " ");
+        }
+        System.out.println("\n");
+
+        do {
+            // Get sender and receiver nodes
+            System.out.print("Enter sender node: ");
+            int sender = scan.nextInt();
+            System.out.print("Enter receiver node: ");
+            int receiver = scan.nextInt();
+            System.out.print("Enter Data: ");
+            int data = scan.nextInt();
+
+            // Display nodes with sender token marked
+            System.out.print("\nToken passing: ");
+            for (int i = token; (i % n) != sender; i = (i + 1) % n) {
+                System.out.print(i + " -> ");
+            }
+            System.out.println("(" + sender + ")");
+
+            // Display the updated node list with sender marked
+            System.out.print("Nodes: ");
+            for (int i = 0; i < n; i++) {
+                if (i == sender) {
+                    System.out.print("(" + i + ") ");
+                } else {
+                    System.out.print(i + " ");
+                }
+            }
+            System.out.println("\n");
+
+            // Data transmission
+            System.out.println("Sender (" + sender + ") sending data: " + data);
+            int i = (sender + 1) % n;
+            while (i != receiver) {
+                System.out.println("Data " + data + " forwarded by " + i);
+                i = (i + 1) % n;
+            }
+            System.out.println("Receiver (" + receiver + ") received data: " + data);
+
+            // Display the updated node list with receiver marked
+            System.out.print("\nNodes: ");
+            for (int j = 0; j < n; j++) {
+                if (j == receiver) {
+                    System.out.print("(" + j + ") ");
+                } else {
+                    System.out.print(j + " ");
+                }
+            }
+            System.out.println("\n");
+
+            token = sender; // Update token position
+
+            // Ask user if they want to send again
+            do {
+                System.out.print("Do you want to send again? Enter 1 for Yes and 0 for No: ");
+                choice = scan.nextInt();
+            } while (choice != 1 && choice != 0);
+
+            System.out.println();
+        } while (choice == 1);
+
+        scan.close(); // Close scanner
+    }
+}
+
+
+
+
+output:
+(base) itl1@itl1-OptiPlex-390:~/Documents/tokenring$ javac *.java
+(base) itl1@itl1-OptiPlex-390:~/Documents/tokenring$ java TokenRing
+Enter the number of nodes:
+4
+
+Enter the process IDs for each node:
+Process ID for node 0: 1
+Process ID for node 1: 2
+Process ID for node 2: 3
+Process ID for node 3: 4
+
+Ring Structure:
+[0 (PID: 1)] [1 (PID: 2)] [2 (PID: 3)] [3 (PID: 4)] -> [0 (PID: 1)]
+
+Nodes: 0 1 2 3 
+
+Enter sender node: 0
+Enter receiver node: 1
+Enter Data: 4
+
+Token passing: (0)
+Nodes: (0) 1 2 3 
+
+Sender (0) sending data: 4
+Receiver (1) received data: 4
+
+Nodes: 0 (1) 2 3 
+
+Do you want to send again? Enter 1 for Yes and 0 for No: 
